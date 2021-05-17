@@ -13,7 +13,7 @@
     //importa o arquivo de conexão
     include "config/conexao.php";
 
-    //verifica se a variavel AL que veio do form de edição esta vazia, caso contrario continua a executar o codigo
+    //verifica se a variavel AL que veio do form de edição esta vazia, caso contrario continua a executar o codigo.
     if(isset($_REQUEST['iduser']))
     {
 
