@@ -13,7 +13,7 @@
     //importa o arquivo de conexão
     include "config/conexao.php";
 
-    //verifica se a variavel AL que veio do form de edição esta vazia, caso contrario continua a executar o codigo.
+    //verifica se a variavel AL que veio do form de edição esta vazia, caso contrario continua a executar o codigo
     if(isset($_REQUEST['iduser']))
     {
 
@@ -66,7 +66,13 @@
 
     <div class="container">
         <div class="row justify-content-center mt-5">
-            <form id="formAltUser" method="POST">
+            <form id="formAltUser" method="POST" enctype="multipart/form-data">
+              <div class="form-group col-sm-6 align-items-center">
+                <img class="img-fluid rounded-circle" src=<?php if(!empty($row['arquivo'])) {echo $row['arquivo'];} else {echo "https://media.istockphoto.com/vectors/profile-placeholder-image-gray-silhouette-no-photo-vector-id1016744034?k=6&m=1016744034&s=170667a&w=0&h=rO1167wSKkLSCFER6c7vjmceJrtyutZW6cF8XSX4bmk="; } ?>>
+                <input type="hidden" name="caminho_arquivo" value="<?php if(!empty($row['arquivo'])) {echo $row['arquivo'];}?>">
+                <label for="arquivo">Alterar Foto</label>
+                <input type="file" class="form-control" id="arquivo" name="arquivo" aria-describedby="arquivo" placeholder="Imagem">
+              </div>
               <div class="form-group">
                 <label for="iduser">ID User</label>
                 <input type="text" class="form-control" id="iduser" name="iduser" aria-describedby="emailHelp" value="<?php echo $row['idusuario']?>" readonly>
@@ -128,7 +134,7 @@
                     </select>
                 </div>
               </div>
-                <input type="submit" name="BtnCadastrar" class="btn btn-success mt-5 float-right" id="Cadastrar" value="Cadastrar"/>
+                <input type="submit" name="BtnCadastrar" class="btn btn-success mt-5 float-right" id="Cadastrar" value="Alterar"/>
                 <button class="btn btn-primary mt-5 mr-2 float-right"><a href="./" style="text-decoration: none; color: white">Cancelar</a></button>
             </form>
         </div>
@@ -148,13 +154,17 @@
                 showProgressbar: false
             });
 
-          var dados = jQuery(this).serialize();
+          //var dados = jQuery(this).serialize();
+          var dados = new FormData(document.getElementById("formAltUser"));  
 
           jQuery.ajax({
             type: "POST",
             url: "config/alterardados.php",
             dataType: 'json',
             data: dados,
+            cache: false,
+            contentType: false,
+            processData: false,
             beforeSend: function(response)
             {  
 

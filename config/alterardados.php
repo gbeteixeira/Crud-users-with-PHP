@@ -47,6 +47,58 @@
         echo json_encode($retorno);
         exit();
     }
+
+    //caso a Files arquivos nn for vazia executa
+    if (!empty($_FILES["arquivo"]["name"])) 
+    {
+        //CODIGO UPLOAD
+        // definindo timezone - data e hora
+        date_default_timezone_set('America/Sao_Paulo');
+        $data = date("d-m-Y");
+        $time = date("H-i-s");
+
+        //função random
+        $num = rand(1, 10000000000);
+
+        //verifica o arquivo
+        $nomeimg = $_FILES["arquivo"]["name"];
+        $temp = $_FILES["arquivo"]["tmp_name"];
+        $tamanho = $_FILES["arquivo"]["size"];
+        $type = $_FILES["arquivo"]["type"];
+        $erro = $_FILES["arquivo"]["error"];
+
+        //verifica a extensão do arquivo
+        $ext = pathinfo($nomeimg, PATHINFO_EXTENSION);
+
+        if (($ext != 'jpg') and ($ext != 'png')) 
+        {
+            $retorno = array('codigo' => 2, 'mensagem' => 'São apenas permitidas as extensões : JPG e PNG');
+            echo json_encode($retorno);
+             exit();
+        }
+
+        if($tamanho > 900000)
+        {
+            $retorno = array('codigo' => 2, 'mensagem' => 'Sua imagem é maior que 9mb!');
+            echo json_encode($retorno);
+            exit();
+        }
+
+        //renomear nome da imagem
+        $novo_nome = 'imagem'.'_'.$data.'_'.$time.'_'.$num.'.'.$ext;
+
+        //comando para mover o arquivo para a pasta
+        $mover = move_uploaded_file($temp, '../img/'.$novo_nome);
+
+        // Criando caminho do arquivo
+        $arquivo = 'img/'.$novo_nome;
+
+    }
+    else
+    {
+        $arquivo = $_REQUEST['caminho_arquivo'];
+    }
+
     if (empty($tipo)) 
     {
         $retorno = array('codigo' => 2, 'mensagem' => 'Selecione o tipo de usuário!');
@@ -101,7 +153,7 @@
 
         //ARMAZENAR O COMANDO DE INSERÇÃO DE DADOS NA VARIAVEL SQL
 
-        $sql = "UPDATE usuarios SET nome = :nome, email = :email, celular = :celular, cpf = :cpf, tipo = :tipo, situacao = :situacao WHERE idusuario = :idusuario";
+        $sql = "UPDATE usuarios SET nome = :nome, email = :email, celular = :celular, cpf = :cpf, arquivo = :arquivo, tipo = :tipo, situacao = :situacao WHERE idusuario = :idusuario";
 
         //passar os parametros (valores vindo do form ou variavel para a variavel $sql)
 
@@ -110,6 +162,7 @@
         $result->bindValue(':email', $email);
         $result->bindValue(':celular', $celular);
         $result->bindValue(':cpf', $cpf);
+        $result->bindValue(':arquivo', $arquivo);
         $result->bindValue(':tipo', $tipo);
         $result->bindValue(':situacao', $situacao);
         $result->bindValue(':idusuario', $idusuario);

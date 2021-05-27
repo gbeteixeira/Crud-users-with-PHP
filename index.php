@@ -44,6 +44,10 @@
 
   <div class="container">
 
+    <div class="col-sm-12">
+      <a href="controleusuarios.php" class="btn btn-primary float-right mt-3 p-3"><i class="fa fa-plus" aria-hidden="true"></i></a>
+    </div>
+
     <div class="row">
 
       <div class="col-sm-12">
@@ -51,6 +55,7 @@
         <table class="table table-bordered mt-3">
           <tr>
             <th> ID </th>
+            <th> Foto </th>
             <th> Nome </th>
             <th> Email </th>
             <th> Celular </th>
@@ -84,6 +89,7 @@
 
 	          <tr>
 	            <td> <?php echo $row['idusuario']?> </td>
+              <td> <img class="img-fluid img-thumbnail" src="<?php if(!empty($row['arquivo'])) {echo $row['arquivo'];} else {echo "https://media.istockphoto.com/vectors/profile-placeholder-image-gray-silhouette-no-photo-vector-id1016744034?k=6&m=1016744034&s=170667a&w=0&h=rO1167wSKkLSCFER6c7vjmceJrtyutZW6cF8XSX4bmk="; } ?>"></td>
 	            <td> <?php echo $row['nome']?> </td>
 	            <td> <?php echo $row['email']?> </td>
 	            <td> <?php echo $row['celular']?> </td>
@@ -92,9 +98,13 @@
 	            	<?php echo ($row['tipo'] == 0) ? "Padrão" : null; ?>
 	            	<?php echo ($row['tipo'] == 1) ? "Administrador" : null; ?> 
 	            </td>
-	            <td> 
-	            	<?php echo ($row['situacao'] == 0) ? "Desativado" : null; ?>
-	            	<?php echo ($row['situacao'] == 1) ? "Ativado" : null; ?> 
+	            <td align="center"> 
+                <i class="fa fa-circle" aria-hidden="true" style="color: 
+
+                  <?php echo ($row['situacao'] == 0) ? "red;" : null; ?>
+                  <?php echo ($row['situacao'] == 1) ? "green;" : null; ?> 
+
+                "></i>
 	            </td>
 	            <td>
                     <a onclick="confirmacao('alterar.php?iduser=<?php echo $row['idusuario']?>')"><i class="fa fa-refresh"></i></a>

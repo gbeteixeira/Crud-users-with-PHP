@@ -32,6 +32,7 @@
     $situacao = isset($_REQUEST['situacao']) ? limpaString($_REQUEST['situacao']) : '';
     $datacadastro = date("Y-m-d");
 
+    //verifica os dados
     if (empty($nome)) 
     {
         $retorno = array('codigo' => 2, 'mensagem' => 'Preencha o campo Nome!');
@@ -59,6 +60,58 @@
     if (empty($senha)) 
     {
         $retorno = array('codigo' => 2, 'mensagem' => 'Preencha o campo Senha!');
+        echo json_encode($retorno);
+        exit();
+    }
+    //caso a Files arquivos nn for vazia executa
+    if (!empty($_FILES["arquivo"])) 
+    {
+        //CODIGO UPLOAD
+        // definindo timezone - data e hora
+        date_default_timezone_set('America/Sao_Paulo');
+        $data = date("d-m-Y");
+        $time = date("H-i-s");
+
+        //função random
+        $num = rand(1, 10000000000);
+
+        //verifica o arquivo
+        $nomeimg = $_FILES["arquivo"]["name"];
+        $temp = $_FILES["arquivo"]["tmp_name"];
+        $tamanho = $_FILES["arquivo"]["size"];
+        $type = $_FILES["arquivo"]["type"];
+        $erro = $_FILES["arquivo"]["error"];
+
+        //verifica a extensão do arquivo
+        $ext = pathinfo($nomeimg, PATHINFO_EXTENSION);
+
+        if (($ext != 'jpg') and ($ext != 'png')) 
+        {
+            $retorno = array('codigo' => 2, 'mensagem' => 'São apenas permitidas as extensões : JPG e PNG');
+            echo json_encode($retorno);
+             exit();
+        }
+
+        if($tamanho > 900000)
+        {
+            $retorno = array('codigo' => 2, 'mensagem' => 'Sua imagem é maior que 9mb!');
+            echo json_encode($retorno);
+            exit();
+        }
+
+        //renomear nome da imagem
+        $novo_nome = 'imagem'.'_'.$data.'_'.$time.'_'.$num.'.'.$ext;
+
+        //comando para mover o arquivo para a pasta
+        $mover = move_uploaded_file($temp, '../img/'.$novo_nome);
+
+        // Criando caminho do arquivo
+        $arquivo = 'img/'.$novo_nome;
+
+    }
+    if (empty($_FILES["arquivo"]))
+    {
+        $retorno = array('codigo' => 2, 'mensagem' => 'Selecione uma imagem!');
         echo json_encode($retorno);
         exit();
     }
@@ -119,7 +172,7 @@
 
         //ARMAZENAR O COMANDO DE INSERÇÃO DE DADOS NA VARIAVEL SQL
 
-        $sql = "INSERT INTO usuarios VALUES (:idusuario, :nome, :email, :celular, :cpf, :senha, :tipo, :situacao, :datacadastro) ";
+        $sql = "INSERT INTO usuarios VALUES (:idusuario, :nome, :email, :celular, :cpf, :senha, :arquivo, :tipo, :situacao, :datacadastro) ";
 
         //passar os parametros (valores vindo do form ou variavel para a variavel $sql)
 
@@ -130,6 +183,7 @@
         $result->bindValue(':celular', $celular);
         $result->bindValue(':cpf', $cpf);
         $result->bindValue(':senha', $pass);
+        $result->bindValue(':arquivo', $arquivo);
         $result->bindValue(':tipo', $tipo);
         $result->bindValue(':situacao', $situacao);
         $result->bindValue(':datacadastro', $datacadastro);

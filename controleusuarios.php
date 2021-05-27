@@ -18,12 +18,24 @@
 
     <!-- Main css -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
 </head>
 <body>
 
+    <div class="bg-primary text-white text-center p-3">
+      <a onclick="confirmacao('?logout')" class="btn float-left"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+      Cadastrar Usuarios
+      <a href="./" class="btn float-right"><i class="fa fa-arrow-left" style="color: white;" aria-hidden="true"></i></a>
+    </div>
+
     <div class="container">
         <div class="row justify-content-center mt-5">
-            <form id="formCadUser" method="POST">
+            <form id="formCadUser" method="POST" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="arquivo">Foto</label>
+                <input type="file" class="form-control" id="arquivo" name="arquivo" aria-describedby="arquivo" placeholder="Imagem">
+              </div>
               <div class="form-group">
                 <label for="nome">Nome</label>
                 <input type="text" class="form-control" id="nome" name="nome" aria-describedby="emailHelp" placeholder="Nome">
@@ -67,26 +79,34 @@
     </div>  
 
     <!-- JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="js/bootstrap-notify.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="js/bootstrap-notify.min.js"></script> 
     <script type = "text/javascript" >
       jQuery(document).ready(function() {
 
         jQuery('#formCadUser').submit(function() {
 
-            var notify = $.notify('<strong></strong>', {
-                type: 'success',
-                allow_dismiss: true,
-                showProgressbar: false
-            });
+          var notify = $.notify('<strong></strong>', {
+              type: 'success',
+              allow_dismiss: true,
+              showProgressbar: false
+            }); 
 
-          var dados = jQuery(this).serialize();
+         
+         var dados = new FormData(document.getElementById("formCadUser"));  
+         
+         //var dados = jQuery(this).serialize();
+          
+          //alert(dados);
 
           jQuery.ajax({
             type: "POST",
             url: "config/salvardados.php",
             dataType: 'json',
             data: dados,
+            cache: false,
+            contentType: false,
+            processData: false,
             beforeSend: function(response)
             {  
 
