@@ -1,13 +1,4 @@
 <?php
-    
-    //varificacao se a sessão foi iniciada
-    session_cache_expire(60);
-    session_start();
-
-    if(!isset($_SESSION['auth']) || $_SESSION['auth'] != true)
-    {
-      header('Location: login/');
-    }
 
     //limpa dados atk xss
     function limpaString($dados)

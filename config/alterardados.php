@@ -154,7 +154,7 @@
         //ARMAZENAR O COMANDO DE INSERÇÃO DE DADOS NA VARIAVEL SQL
 
         $sql = "UPDATE usuarios SET nome = :nome, email = :email, celular = :celular, cpf = :cpf, arquivo = :arquivo, tipo = :tipo, situacao = :situacao WHERE idusuario = :idusuario";
-
+        
         //passar os parametros (valores vindo do form ou variavel para a variavel $sql)
 
         $result = $conn->prepare($sql);

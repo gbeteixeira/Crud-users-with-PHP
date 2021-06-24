@@ -45,7 +45,7 @@
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         //Busca hash da senha pelo email
-        $sql1 = "SELECT senha FROM usuarios WHERE email = :email AND tipo = 1";
+        $sql1 = "SELECT senha FROM usuarios WHERE email = :email";
         //prepara a conexao
         $result = $conn->prepare($sql1);
         //atribui o email que foi passado no campo de login na condição de busca
@@ -75,7 +75,7 @@
             try
             {
                 //ARMAZENAR O COMANDO DE INSERÇÃO DE DADOS NA VARIAVEL SQL
-                $sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ? AND tipo = 1";
+                $sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ? ";
                 //prepara a conexao
                 $stm = $conn->prepare($sql);
                 //atribui o email que foi passado no campo de login na condição de busca
@@ -90,10 +90,28 @@
                 //retorna que os dados estão sendo validados
                 $retorno = array('codigo' => 1, 'mensagem' => 'Validando dados...');
 
-                //sessao de login passa a ser true
-                $_SESSION['auth'] = true;
-                //sessao de com o id do usuario
-                $_SESSION['sess_id_user'] = $dadosUser['idusuario'];
+                if($dadosUser['situacao'] == 1)
+                {
+                    //sessao de login passa a ser true
+                    $_SESSION['auth'] = true;
+                    //sessao de com o id do usuario
+                    $_SESSION['sess_id_user'] = $dadosUser['idusuario'];
+                    //sessao de com o nome do usuario
+                    $_SESSION['sess_name_user'] = $dadosUser['nome'];
+                    //sessao de com o nome do usuario
+                    $_SESSION['sess_email_user'] = $dadosUser['email'];
+                    //sessao de com o nivel de acesso do usuario
+                    $_SESSION['sess_tipo_user'] = $dadosUser['tipo'];
+                    //sessao com valor da foto do user
+                    $_SESSION['sess_foto_user'] = $dadosUser['arquivo'];
+
+                }
+                else
+                {
+                    $retorno = array('codigo' => 2, 'mensagem' => 'O usuario está desativado!');
+                    echo json_encode($retorno);
+                    exit();
+                }
 
                 //retorna o que está acontecendo em Json
                 echo json_encode($retorno);

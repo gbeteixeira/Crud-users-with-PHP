@@ -1,12 +1,4 @@
 <?php 
-  //varificacao se a sessão foi iniciada
-  session_cache_expire(60);
-  session_start();
-
-  if(!isset($_SESSION['auth']) || $_SESSION['auth'] != true)
-  {
-    header('Location: login/');
-  }
 
   //processo para recuperar os dados e exibir no formulario
   try{
@@ -93,6 +85,7 @@
                 <label for="cpf">CPF</label>
                 <input type="text" class="form-control cpf-mask" name="cpf" id="cpf" value="<?php echo $row['cpf']?>">
               </div>
+
               <div class="row">
                 <div class="col">
                     <label for="situacao">Situação</label>

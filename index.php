@@ -1,13 +1,4 @@
-<?php
-  //verificacao se tem uma sessao inciada
-  session_cache_expire(60);
-  session_start();
 
-  if(!isset($_SESSION['auth']) || $_SESSION['auth'] != true)
-  {
-    header('Location: login/');
-  }
-?>
 <!DOCTYPE html>
 
 <html>
@@ -38,7 +29,7 @@
 <body>
 
   <div class="bg-primary text-white text-center p-3">
-  	<a onclick="confirmacao('?logout')" class="btn float-left"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+    <a href="./login" class="btn float-left"><i class="fa fa-user" aria-hidden="true"></i></a>
     Usuarios
   </div>
 
@@ -155,17 +146,6 @@
 </body>
 
 </html>
-
-<?php
-
-  if(isset($_GET['logout'])) {
-    session_destroy();
-    unset($_SESSION['auth']);
-    unset($_SESSION['sess_id_user']);
-    header('location:login/');
-  }
-
-?>
 
 <?php
 

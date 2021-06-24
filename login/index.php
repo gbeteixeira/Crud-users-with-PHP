@@ -2,7 +2,7 @@
   session_start();
   if(isset($_SESSION['auth']) && $_SESSION['auth'] == true)
   {
-    header('Location: ../');
+    header('Location: ../dashboard');
   }
 ?>
 <!DOCTYPE html>
@@ -45,7 +45,7 @@
                     <p class="text-muted"> Insira seu login e sua senha!</p> 
                     <input type="text" name="email" placeholder="Email"> 
                     <input type="password" name="senha" placeholder="Senha"> 
-                    <a class="forgot text-muted" href="#">Esqueceu sua senha?</a> 
+                    <a class="forgot text-muted" onclick="forgot()">Esqueceu sua senha?</a> 
                     <input type="submit" name="" value="Login" href="#">
                 </form>
             </div>
@@ -91,7 +91,7 @@
                 {
                    notify.update('type', 'success');
                    notify.update('message', '<strong>Sucesso!</strong> '+ response.mensagem);
-                   setTimeout(function(){ location.href = '../' }, 3000);
+                   setTimeout(function(){ location.href = '../dashboard' }, 3000);
                 }
 
                 if (response.codigo == 2) 
@@ -121,7 +121,100 @@
           return false;
         });
       }); 
+
+
+      function forgot(){
+        $('#forgot').modal();
+      }
+
+
+      $('document').ready(function(){
+ 
+        $(".btn-forgot").click(function(){
+
+          //pega o email digitado
+          var email = $('#email_forgot').val();
+          
+          //verifica se o email está vazio
+          if(email != "" )
+          {
+
+            $.ajax({
+              type : 'POST',
+              url  : '../config/forgot.php',
+              data : {email: email},
+              dataType: 'json',
+              beforeSend: function()
+              { 
+                $('.img-snipper').show();
+                //depois que enviado é notificado ao usuario que os dados estão sendo validados
+              },
+              success :  function(response)
+              {            
+                //caso sucesso na alteração manda verificar o email
+                if(response.codigo == 202)
+                {
+                  $('.resp-forgot').html('Verifique seu e-mail');
+                  setTimeout(function()
+                  {  
+                    setTimeout(function(){location.href="./"} , 2000);  
+                  }, 2000);
+                }
+
+                //caso email nn encontrado
+                if(response.codigo == 404)
+                {
+                  $('.resp-forgot').html('E-mail não cadastrado');
+                }
+
+              },
+              //erros desconhecidos
+              error: function (request, status, error) 
+              {
+                 //alert(request.responseText);
+                 notify.update('type', 'danger');
+                 notify.update('message', 'Erro ao alterar a senha!');
+              }
+
+            });
+
+          }
+          else
+          {
+            $('.resp-forgot').html('Informe o email');
+          }
+        });
+
+       
+      });
+
     </script>
 </body>
-
 </html>
+
+<!-- MODAL FORGOT -->
+<div class="modal" id="forgot" tabindex="-1" role="dialog" aria-labelledby="smallModalHead" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">                    
+            <div class="modal-body">
+                <h2 class="tex-center">Recuperação de senha</h2><br>
+        <form class="" id="forgot-form" >
+          <div class="form-group">
+            <input type="email" id="email_forgot" name="email_forgot" class="form-control" placeholder="email..." required="required">
+          </div>  
+          <div class="resp-forgot pull-left">
+            <div class="img-snipper" style="display: none;">
+              <img src="img/Double Ring-1.5s-200px.svg" width="50px" alt="">
+            </div>
+          </div>
+          <button type="button" class="btn btn-success btn-forgot pull-right">Recuperar</button>
+        </form>
+      </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>  
+<!-- END MODAL FORGOT -->
